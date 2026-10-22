@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Your Listing Dashboard | The Realize Team</title>
+<meta name="description" content="A private listing dashboard from The Realize Team.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #3F799D;
+    --blue-dark: #2E5B77;
+    --blue-soft: #EAF2F7;
+    --ink: #1A1A1A;
+    --muted: #606060;
+    --line: #E3E7EA;
+    --bg: #F6F8F9;
+    --card: #FFFFFF;
+    --good: #2F7D4F;
+    --good-soft: #E7F4EC;
+    --warn-soft: #F4F1EA;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 16px/1.55 "Open Sans", system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .brand, .num, button, .chip {
+    font-family: Montserrat, system-ui, -apple-system, sans-serif;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 48px; }
+  header.top {
+    background: var(--blue);
+    color: #fff;
+    padding: 18px 0 22px;
+  }
+  header.top .wrap { padding-bottom: 0; }
+  .brand { font-weight: 700; letter-spacing: .02em; font-size: 15px; opacity: .92; }
+  .brand small { font-weight: 500; opacity: .8; }
+
+  /* Lock screen */
+  #lock { min-height: 100vh; display: flex; flex-direction: column; }
+  #lock main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px 16px; }
+  .lockcard {
+    background: var(--card); border-radius: var(--radius); padding: 28px 24px;
+    width: 100%; max-width: 400px; box-shadow: 0 2px 18px rgba(20,40,60,.08);
+  }
+  .lockcard h1 { font-size: 22px; margin: 0 0 6px; }
+  .lockcard p { color: var(--muted); margin: 0 0 20px; }
+  label { font-weight: 600; font-size: 14px; display: block; margin-bottom: 6px; }
+  input[type=password], input[type=text] {
+    width: 100%; font: inherit; font-size: 18px; padding: 12px 14px;
+    border: 1.5px solid var(--line); border-radius: 10px; color: var(--ink); background: #fff;
+  }
+  input:focus { outline: 3px solid var(--blue-soft); border-color: var(--blue); }
+  .remember { display: flex; gap: 8px; align-items: center; margin: 14px 0 18px; font-size: 14px; color: var(--muted); }
+  .remember input { width: 18px; height: 18px; }
+  button.primary {
+    width: 100%; background: var(--blue); color: #fff; border: 0; border-radius: 10px;
+    font-size: 16px; font-weight: 600; padding: 14px; cursor: pointer;
+  }
+  button.primary:hover { background: var(--blue-dark); }
+  button.primary:disabled { opacity: .6; cursor: wait; }
+  .err { color: #A3342B; font-size: 14px; min-height: 20px; margin-top: 10px; }
+
+  /* Dashboard */
+  #app[hidden], #lock[hidden] { display: none; }
+  .hero h1 { font-size: 26px; line-height: 1.2; margin: 14px 0 4px; }
+  .hero .sub { opacity: .9; }
+  .chip {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .04em;
+    text-transform: uppercase; padding: 5px 10px; border-radius: 999px;
+    background: #fff; color: var(--blue);
+  }
+  .updated { font-size: 13px; opacity: .85; margin-top: 10px; }
+  .stats {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: -14px 0 8px;
+  }
+  @media (min-width: 640px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+  .stat { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: 0 1px 6px rgba(20,40,60,.06); }
+  .stat .num { font-size: 26px; font-weight: 700; color: var(--blue); line-height: 1.1; }
+  .stat .lbl { font-size: 13px; color: var(--muted); }
+  section.card {
+    background: var(--card); border-radius: var(--radius); padding: 20px; margin-top: 16px;
+    box-shadow: 0 1px 6px rgba(20,40,60,.06);
+  }
+  section.card h2 { font-size: 18px; margin: 0 0 4px; }
+  section.card .hint { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
+  .empty { background: var(--bg); border-radius: 10px; padding: 14px; color: var(--muted); font-size: 15px; }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li { padding: 12px 0; border-top: 1px solid var(--line); display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
+  .list li:first-child { border-top: 0; }
+  .when { font-weight: 600; }
+  .when small { display: block; font-weight: 400; color: var(--muted); font-size: 14px; }
+  .tag { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 999px; white-space: nowrap; font-family: Montserrat, sans-serif; }
+  .tag.done { background: var(--blue-soft); color: var(--blue-dark); }
+  .tag.next { background: var(--good-soft); color: var(--good); }
+  .tag.cxl { background: var(--warn-soft); color: var(--muted); }
+  .fb { border-left: 4px solid var(--blue); background: var(--blue-soft); border-radius: 0 10px 10px 0; padding: 12px 14px; margin-top: 12px; }
+  .fb:first-of-type { margin-top: 0; }
+  .fb .meta { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  .fb q { quotes: "\201C" "\201D"; }
+  .quiet { color: var(--muted); font-size: 14px; margin-top: 12px; }
+  .ads { display: grid; gap: 12px; }
+  .ad { border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  .ad h3 { font-size: 15px; margin: 0 0 2px; }
+  .ad .dates { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+  .ad .nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .ad .nums div { font-size: 13px; color: var(--muted); }
+  .ad .nums b { display: block; font: 700 20px/1.2 Montserrat, sans-serif; color: var(--ink); }
+  .timeline { list-style: none; margin: 0; padding: 0 0 0 18px; border-left: 2px solid var(--line); }
+  .timeline li { position: relative; padding: 0 0 14px 6px; }
+  .timeline li::before { content: ""; position: absolute; left: -25px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--blue); }
+  .timeline small { display: block; color: var(--muted); font-size: 13px; }
+  a.btn {
+    display: block; text-align: center; background: var(--blue); color: #fff; text-decoration: none;
+    border-radius: 10px; padding: 14px; font: 600 16px Montserrat, sans-serif; margin-top: 16px;
+  }
+  a.btn.secondary { background: #fff; color: var(--blue); border: 1.5px solid var(--blue); }
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 28px; }
+  footer button { background: none; border: 0; color: var(--blue); font: 600 13px Montserrat, sans-serif; cursor: pointer; padding: 8px; }
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <header class="top"><div class="wrap"><div class="brand">THE REALIZE TEAM <small>· Key Realty</small></div></div></header>
+  <main>
+    <form class="lockcard" id="lockform" autocomplete="off">
+      <h1>Your listing dashboard</h1>
+      <p>Enter the passcode we gave you to see your showings, feedback and marketing.</p>
+      <label for="pc">Passcode</label>
+      <input id="pc" type="password" inputmode="text" autocapitalize="none" autocorrect="off" spellcheck="false" required>
+      <div class="remember"><input id="rem" type="checkbox" checked><label for="rem" style="margin:0;font-weight:400">Keep me signed in on this device</label></div>
+      <button class="primary" id="go" type="submit">Open my dashboard</button>
+      <div class="err" id="err" role="alert"></div>
+    </form>
+  </main>
+</div>
+
+<div id="app" hidden></div>
+
+<script id="sealed" type="application/json">{"salt": "QxDs8gSTb3LfgNJiQ8qZiw==", "iv": "H+T2/BqTh339xLQDZB9hSA==", "ct": "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", "mac": "cq+r/7XNbw68903qSZmC1xWS84qNBzqD+v1CPuOdWIQ=", "iter": 600000, "id": "F58yANzSbBZ2yGMt"}</script>
+<script>
+(function () {
+  "use strict";
+  var SEALED = JSON.parse(document.getElementById("sealed").textContent);
+  var STORE = "rt-dash-" + SEALED.id;
+  var b64 = function (s) { return Uint8Array.from(atob(s), function (c) { return c.charCodeAt(0); }); };
+
+  async function unseal(passcode) {
+    var enc = new TextEncoder();
+    var base = await crypto.subtle.importKey("raw", enc.encode(passcode), "PBKDF2", false, ["deriveBits"]);
+    var bits = new Uint8Array(await crypto.subtle.deriveBits(
+      { name: "PBKDF2", hash: "SHA-256", salt: b64(SEALED.salt), iterations: SEALED.iter }, base, 512));
+    var aesKey = await crypto.subtle.importKey("raw", bits.slice(0, 32), "AES-CBC", false, ["decrypt"]);
+    var macKey = await crypto.subtle.importKey("raw", bits.slice(32), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
+    var iv = b64(SEALED.iv), ct = b64(SEALED.ct);
+    var signed = new Uint8Array(iv.length + ct.length); signed.set(iv); signed.set(ct, iv.length);
+    var ok = await crypto.subtle.verify("HMAC", macKey, b64(SEALED.mac), signed);
+    if (!ok) return null;
+    var plain = await crypto.subtle.decrypt({ name: "AES-CBC", iv: iv }, aesKey, ct);
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+
+  /* ---------- rendering ---------- */
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  // Times arrive with their Ohio offset; always show them in Ohio time, whatever the phone's zone.
+  var TZ = "America/New_York";
+  var at = function (s) { return new Date(s); };
+  var day = function (s) { return at(s).toLocaleDateString("en-US", { timeZone: TZ, weekday: "short", month: "short", day: "numeric" }); };
+  var tm = function (s) { return at(s).toLocaleTimeString("en-US", { timeZone: TZ, hour: "numeric", minute: "2-digit" }); };
+  var dateOnly = function (s, opts) { return at(s + "T12:00:00-05:00").toLocaleDateString("en-US", Object.assign({ timeZone: TZ }, opts)); };
+  var span = function (a, b) { return tm(a) + " to " + tm(b); };
+  var n = function (x) { return Number(x).toLocaleString("en-US"); };
+  var money = function (x) { return "$" + n(x); };
+
+  function render(d) {
+    var now = new Date();
+    var shows = (d.showings || []).slice().sort(function (a, b) { return at(a.start) - at(b.start); });
+    // The label comes from the showing system's status; the clock only splits booked showings.
+    var held = shows.filter(function (s) { return s.status === "completed"; });
+    var upcoming = shows.filter(function (s) { return s.status === "scheduled" && at(s.end) > now; });
+    var withFb = held.filter(function (s) { return s.feedback; }).reverse();
+    var ohs = (d.open_houses || []).slice().sort(function (a, b) { return at(b.start) - at(a.start); });
+    var ads = d.ads || [];
+    var L = d.listing;
+
+    var domEnd = L.contract_date ? at(L.contract_date + "T12:00:00-05:00") : now;
+    var dom = Math.max(1, Math.round((domEnd - at(L.listed_date + "T12:00:00-05:00")) / 864e5));
+    var reach = ads.reduce(function (t, a) { return t + (Number(a.reach) || 0); }, 0);
+
+    var h = [];
+    h.push('<header class="top"><div class="wrap">');
+    h.push('<div class="brand">THE REALIZE TEAM <small>· Key Realty</small></div>');
+    h.push('<div class="hero"><h1>' + esc(L.address) + '</h1>');
+    h.push('<div class="sub">' + esc(L.city) + (L.list_price ? " · Listed at " + money(L.list_price) : "") + '</div>');
+    h.push('<div style="margin-top:10px"><span class="chip">' + esc(L.status_label) + '</span></div>');
+    h.push('<div class="updated">Prepared for ' + esc(d.seller_names) + ' · Updated ' + esc(at(d.updated_at).toLocaleString("en-US", { timeZone: TZ, month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })) + '</div>');
+    h.push('</div></div></header><div class="wrap">');
+
+    h.push('<div class="stats">');
+    h.push(stat(dom, L.contract_date ? "days to contract" : "days on market"));
+    h.push(stat(held.length, held.length === 1 ? "showing" : "showings"));
+    h.push(stat(withFb.length, "with feedback"));
+    h.push(ads.length ? stat(n(reach), "people reached by ads") : stat(ohs.length, ohs.length === 1 ? "open house" : "open houses"));
+    h.push('</div>');
+
+    // Upcoming
+    h.push('<section class="card"><h2>Coming up</h2><p class="hint">Showings on the calendar. New ones appear here as soon as they are booked.</p>');
+    if (upcoming.length) {
+      h.push('<ul class="list">' + upcoming.map(function (s) {
+        return '<li><div class="when">' + day(s.start) + '<small>' + span(s.start, s.end) + '</small></div><span class="tag next">Scheduled</span></li>';
+      }).join("") + '</ul>');
+    } else {
+      h.push('<div class="empty">' + (L.contract_date ? "Your home is under contract, so no new showings are being booked." : "Nothing on the calendar right now. We are working on it, and new showings show up here the moment they book.") + '</div>');
+    }
+    h.push('</section>');
+
+    // Feedback
+    h.push('<section class="card"><h2>What buyers are saying</h2><p class="hint">Feedback from showing agents, word for word, newest first.</p>');
+    if (withFb.length) {
+      h.push(withFb.map(function (s) {
+        return '<div class="fb"><div class="meta">Showing on ' + day(s.start) + ' at ' + tm(s.start) + '</div><q>' + esc(s.feedback) + '</q></div>';
+      }).join(""));
+      var none = held.length - withFb.length;
+      if (none > 0) h.push('<p class="quiet">' + none + ' of ' + held.length + ' showings did not leave written feedback. That is common; we follow up by phone on the ones that matter.</p>');
+    } else {
+      h.push('<div class="empty">' + (held.length ? "No written feedback yet. Showing agents often skip the form, so we follow up by phone and let you know what we hear." : "Feedback shows up here after the first showing.") + '</div>');
+    }
+    h.push('</section>');
+
+    // All showings
+    h.push('<section class="card"><h2>Every showing</h2><p class="hint">The full history from our showing system.</p>');
+    if (shows.length) {
+      h.push('<ul class="list">' + shows.slice().reverse().map(function (s) {
+        var t = s.status === "cancelled" ? '<span class="tag cxl">Cancelled</span>'
+          : s.status === "completed" ? '<span class="tag done">Shown</span>'
+          : (at(s.end) > now ? '<span class="tag next">Scheduled</span>' : '<span class="tag cxl">Awaiting confirmation</span>');
+        return '<li><div class="when">' + day(s.start) + '<small>' + span(s.start, s.end) + '</small></div>' + t + '</li>';
+      }).join("") + '</ul>');
+    } else {
+      h.push('<div class="empty">No showings yet. This list fills in from our showing system automatically.</div>');
+    }
+    h.push('</section>');
+
+    // Open houses
+    h.push('<section class="card"><h2>Open houses</h2>');
+    if (ohs.length) {
+      h.push('<ul class="list">' + ohs.map(function (o) {
+        var past = at(o.end) <= now;
+        var recent = past && (now - at(o.end)) < 3 * 864e5;
+        return '<li><div class="when">' + day(o.start) + '<small>' + span(o.start, o.end) + '</small>' +
+          (o.notes ? '<div style="font-weight:400;margin-top:6px">' + esc(o.notes) + '</div>' : (recent ? '<div class="quiet" style="margin-top:6px">Notes from this open house are on the way.</div>' : '')) +
+          '</div><span class="tag ' + (past ? "done" : "next") + '">' + (past ? "Held" : "Planned") + '</span></li>';
+      }).join("") + '</ul>');
+    } else {
+      h.push('<div class="empty">No open house scheduled yet. When we set one, the date and how it went will show here.</div>');
+    }
+    h.push('</section>');
+
+    // Ads (an under-contract home with no ad history skips the section rather than promise results)
+    if (ads.length || !L.contract_date) {
+    h.push('<section class="card"><h2>Facebook and Instagram ads</h2><p class="hint">How many local people your home was put in front of.</p>');
+    if (ads.length) {
+      h.push('<div class="ads">' + ads.map(function (a) {
+        return '<div class="ad"><h3>' + esc(a.name) + '</h3><div class="dates">' + esc(a.dates) + '</div><div class="nums">' +
+          '<div><b>' + n(a.reach) + '</b>people reached</div>' +
+          '<div><b>' + n(a.impressions) + '</b>times shown</div>' +
+          (a.clicks != null ? '<div><b>' + n(a.clicks) + '</b>clicks to your site</div>' : '') +
+          '</div></div>';
+      }).join("") + '</div>');
+    } else {
+      h.push('<div class="empty">Ad results will appear here once the first campaign has run for a day.</div>');
+    }
+    h.push('</section>');
+    }
+
+    // Timeline
+    if ((d.timeline || []).length) {
+      h.push('<section class="card"><h2>Milestones</h2><ul class="timeline">' + d.timeline.map(function (t) {
+        return '<li>' + esc(t.label) + '<small>' + esc(dateOnly(t.date, { month: "long", day: "numeric", year: "numeric" })) + '</small></li>';
+      }).join("") + '</ul></section>');
+    }
+
+    if (/^https:\/\/[^\s"'<>]+$/.test(d.website_url || "")) h.push('<a class="btn" href="' + esc(d.website_url) + '" target="_blank" rel="noopener">View your property website</a>');
+    if (d.agent && d.agent.phone) h.push('<a class="btn secondary" href="tel:' + esc(d.agent.phone.replace(/[^0-9+]/g, "")) + '">Call ' + esc(d.agent.name) + '</a>');
+
+    h.push('<footer>Private to you. Please do not share this link or passcode.<br>The Realize Team · Key Realty<br><button type="button" id="signout">Sign out on this device</button></footer>');
+    h.push('</div>');
+
+    var app = document.getElementById("app");
+    app.innerHTML = h.join("");
+    document.getElementById("lock").hidden = true;
+    app.hidden = false;
+    document.getElementById("signout").onclick = function () {
+      try { localStorage.removeItem(STORE); } catch (e) {}
+      location.reload();
+    };
+  }
+  function stat(num, lbl) { return '<div class="stat"><div class="num">' + num + '</div><div class="lbl">' + lbl + '</div></div>'; }
+
+  /* ---------- unlock flow ---------- */
+  // The link carries a long secret after "#". Browsers never send that part to the
+  // server, so a copy of this file alone cannot be guessed open.
+  var form = document.getElementById("lockform"), err = document.getElementById("err"), go = document.getElementById("go");
+  var linkSecret = decodeURIComponent((location.hash || "").slice(1));
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem(STORE) || "null"); } catch (e) { saved = null; }
+  if (!linkSecret && saved && saved.s) linkSecret = saved.s;
+  async function tryOpen(pc, remember) {
+    var code = pc.trim().toLowerCase(), data = null;
+    try { data = await unseal(code + ":" + linkSecret); } catch (e) { data = null; }
+    if (!data) return false;
+    try {
+      if (remember) localStorage.setItem(STORE, JSON.stringify({ p: code, s: linkSecret }));
+      else localStorage.removeItem(STORE);
+    } catch (e) {}
+    render(data);
+    return true;
+  }
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    err.textContent = ""; go.disabled = true; go.textContent = "Opening...";
+    var ok = await tryOpen(document.getElementById("pc").value, document.getElementById("rem").checked);
+    if (!ok) { err.textContent = "That passcode did not match. Check the text from us and try again."; go.disabled = false; go.textContent = "Open my dashboard"; }
+  });
+  if (!window.crypto || !crypto.subtle) {
+    err.textContent = "This browser is too old to open the dashboard. Try Safari or Chrome.";
+    go.disabled = true;
+  } else if (!linkSecret) {
+    err.textContent = "This link is missing a piece. Open it straight from the text or email we sent you.";
+    go.disabled = true;
+  } else if (saved && saved.p) {
+    tryOpen(saved.p, true).then(function (ok) { if (!ok) { try { localStorage.removeItem(STORE); } catch (e) {} } });
+  }
+})();
+</script>
+</body>
+</html>
