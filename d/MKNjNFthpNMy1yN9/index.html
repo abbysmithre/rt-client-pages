@@ -148,7 +148,7 @@
 
 <div id="app" hidden></div>
 
-<script id="sealed" type="application/json">{"salt": "mzzji1gy3LitTdtgXxc78w==", "iv": "P+ZNdPX4CCKcDfhklz4FjA==", "ct": "7Opwsl1t70BgErJ5JQGvofw6aiPucQS9M2QhDOVpMFvXPSrGr7hnhvjG1ZocOiRVMRYUKF9iefc7Y9Yir/pnUK7bVHZkvNHuAijc2WUKh3td8LYRSfMYBbNnWuImmext8HjL1vjIZVrv4sA/CY7xeZ09Hv6eGq3+HZFY+0T3Nv82giWEhVf6p1ph6UWEGu2hA5S0D6Ujwy0Arhje0siHhOfI6ozsrez1Ejs0eWzicIz2ST5HdOA5oTs7XvIPubteqD7fiDrCGNVJLixijSvFw+yZB7Vzuk7fMIEmQsn/TnSaGr6Z9epgg+c7gZB3FvKema/mt1LqIq6WEUWjXJfd16h4hVFxdg7LismBtBXHbDjhr5i+dCbj8HWx0pmLe9CTzVXTAM6RJLye4oHbh43qQ3EDYZc+O6FyoQtALvQ0jfmwldZm5cqejIGQinsd2HammaTszl389YoWYmj74QS+vbqo4Qejp0PcflJc1a7XoVn6hhkjHGzXRKORjOBr7Y8zVj3eduuAYHa5iqvHyx4j3cOcKhjLMNYBHfJTL07QG7Y9owpyLPu0WYiaIgnzd+DHdUU87R4UC2FGGh1h3ZlegBvYd4Zf3A1IdT0JPccrruny9d3522PAC0ujAd0k1Ks8bS+ygapskWekanlDXeqrtA==", "mac": "ejAWLwbRWFurLybGS67LgtjCgwV2+npgxHfbYU+xKNc=", "iter": 600000, "id": "MKNjNFthpNMy1yN9"}</script>
+<script id="sealed" type="application/json">{"salt": "mGTYVUwZ67pzIIAX935XBw==", "iv": "XyW/zWpaF++hgymJ+XFevw==", "ct": "EZrebQCDTRpxGQENA1ZSIJ7vZvxqHd/X8SH/gycXtcvAvTdvFV4/pq2eK2eS2JGMWEzrGOyCNBRcfmrmFHr7w2V+TsnVl7XSnjHF0eZG5eBXzcV89c4YCZLNap//Sp0PRusI48qcxjYnnGSvFNMzRFUhbQxK/USDe2CHrEhdCkR0q39JY2AGHb34I9pAfTkC7hAz5cPD2y2np0WhLKloqTdI+AAEp8pV7340b0AoJ35rOqspVbNDG5j6fp3D4/u/7F1bh6B88MWWWtZ0pt1KJ8DEjhJnuCVGO/jAxu/hIJP92l60pQebyuUPKrLkH0fsyri6VF8ZjM6SDz7d49+S+OoMLvkOFU/jKy1hn33Rjhv4/1aotEjtJPmIiqUWtcwSONbJDklFDzDbiMNHtfgH2mugg1XTWNPAkoS4TP4yUvSWtGZhOTG0kBUBgrBh4znjw7Za42irBsNGGSyPlHeIR3I7nqM+dUH3Z8qsK4Gjaogko823kpvzxD0A/Zppu6RmSKDXoLd0I6FHHMOE5iwqTtD7YSNpLOoU7NUY+KE6OqYKXYkcA5nrHU2oC9D5BboEI9iMnz/T/ZgIi4uC0PnUVPQEQCneJF+2Ly2BCMnxCqQWTI3D6gIm2Xe3RP59j+rm/D0ykcJSM+kK/28EtzRFuQ==", "mac": "4KHME4ydgdT5VjynF7Phu8AaOtLT6i+RKRY3Zk1Cb/4=", "iter": 600000, "id": "MKNjNFthpNMy1yN9"}</script>
 <script>
 (function () {
   "use strict";
@@ -215,13 +215,13 @@
     h.push('</div>');
 
     // Upcoming
-    h.push('<section class="card"><h2>Coming up</h2><p class="hint">Showings on the calendar. New ones appear here as soon as they are booked.</p>');
+    h.push('<section class="card"><h2>Coming up</h2><p class="hint">Showings on the calendar as of the last update shown above.</p>');
     if (upcoming.length) {
       h.push('<ul class="list">' + upcoming.map(function (s) {
         return '<li><div class="when">' + day(s.start) + '<small>' + span(s.start, s.end) + '</small></div><span class="tag next">Scheduled</span></li>';
       }).join("") + '</ul>');
     } else {
-      h.push('<div class="empty">' + (L.contract_date ? "Your home is under contract, so no new showings are being booked." : "Nothing on the calendar right now. We are working on it, and new showings show up here the moment they book.") + '</div>');
+      h.push('<div class="empty">' + (L.contract_date ? "Your home is under contract, so no new showings are being booked." : "Nothing on the calendar as of this update. New showings are added each time we update your page.") + '</div>');
     }
     h.push('</section>');
 
@@ -248,7 +248,7 @@
         return '<li><div class="when">' + day(s.start) + '<small>' + span(s.start, s.end) + '</small></div>' + t + '</li>';
       }).join("") + '</ul>');
     } else {
-      h.push('<div class="empty">No showings yet. This list fills in from our showing system automatically.</div>');
+      h.push('<div class="empty">No showings yet. This list comes straight from our showing system each time we update your page.</div>');
     }
     h.push('</section>');
 
